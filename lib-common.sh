@@ -1,4 +1,4 @@
-# Shared helpers for setup-host.sh, setup-vss.sh, and check-env.sh.
+# Shared helpers for setup-host.sh.
 # Source this file; do not run it directly.
 
 # Validated versions (keep in sync with the README version table).

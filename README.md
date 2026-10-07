@@ -55,6 +55,10 @@ The application shares these VSS services:
 * Access to GitHub, the apt repositories, and `get.docker.com`.
 * Access to Docker Hub, where the bundle images are hosted: [`ispsae/vss-3.2.1-offline-bundle`](https://hub.docker.com/r/ispsae/vss-3.2.1-offline-bundle).
 
+**Live Preview (optional)**
+
+* An RTSP-to-WebRTC gateway, if you want to watch live RTSP streams in the browser. It is not part of the bundle; set it up separately.
+
 ### 1. Check the Host
 
 Confirm that the system is Jetson Linux R38.4.0:

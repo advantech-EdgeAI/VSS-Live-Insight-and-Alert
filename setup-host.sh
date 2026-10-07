@@ -228,8 +228,10 @@ print_summary() {
     Next steps:
       1. Reboot (applies the docker group, power mode, and jetson_clocks).
       2. Confirm the fan is running before starting any workload.
-      3. As '${target_user}' (no sudo), run:
-           ${script_dir}/setup-vss.sh
+      3. As '${target_user}' (no sudo), download the images (needs the internet):
+           cd ${script_dir} && ./pull.sh
+      4. Install (no internet needed):
+           ./install.sh
 EOF
 }
 
