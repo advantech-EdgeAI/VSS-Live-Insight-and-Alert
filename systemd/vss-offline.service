@@ -1,0 +1,14 @@
+[Unit]
+Description=Start the offline VSS stack (qwen38-llm, mdx, vss-live-insight)
+Requires=docker.service
+After=docker.service nv-l4t-usb-device-mode.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=mic-743
+ExecStart=/usr/local/bin/vss-start.sh
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target

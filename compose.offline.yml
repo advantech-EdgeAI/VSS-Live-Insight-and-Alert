@@ -1,0 +1,36 @@
+# Offline overrides for VSS 3.2.1 on AGX Thor. Pass as an extra -f after
+# deploy/docker/compose.yml; the VSS compose files themselves stay untouched.
+#
+# logstash: the stock command installs logstash-codec-protobuf from the
+# internet on every start and exits when that fails. The -offline image is a
+# `docker commit` of a logstash container that already has the plugin, and the
+# command below only installs it when it is missing.
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:9.3.3-offline
+    command: >
+      bash -c "
+        if [ \"$$STREAM_TYPE\" = 'redis' ]; then
+          echo 'Installing Redis stream input plugin...' &&
+          /usr/share/logstash/bin/logstash-plugin install /usr/share/logstash/gems/logstash-redis-stream-input-java.gem;
+        elif [ \"$$STREAM_TYPE\" = 'kafka' ]; then
+          if /usr/share/logstash/bin/logstash-plugin list logstash-codec-protobuf >/dev/null 2>&1; then
+            echo 'protobuf codec plugin already installed, skipping';
+          else
+            echo 'Installing protobuf codec plugin...' &&
+            /usr/share/logstash/bin/logstash-plugin install logstash-codec-protobuf;
+          fi;
+        fi &&
+        exec /usr/local/bin/docker-entrypoint"
+
+  # sdrc init helpers: the stock commands `apk add` their tools on every start.
+  # The -offline images are commits of the helpers after that install.
+  wait-for-docker-workloads:
+    image: alpine:3.23.4-docker-cli-offline
+    command:
+      - "{ command -v docker >/dev/null || apk add --no-cache docker-cli >/dev/null; } && /wait-for-docker-workloads.sh"
+
+  wdm-env-from-config:
+    image: alpine:3.23.4-gettext-yq-offline
+    command:
+      - "{ command -v envsubst >/dev/null && command -v yq >/dev/null || apk add --no-cache gettext yq >/dev/null; } && /run.sh"

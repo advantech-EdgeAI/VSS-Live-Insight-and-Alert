@@ -1,0 +1,63 @@
+# VSS 3.2.1 on AGX Thor — offline bundle 261001
+# Scope: LVS profile + Live Insight + RT-VLM alerts + translation + local LLM (qwen38-llm)
+# Docker Hub: docker.io/ispsae/vss-3.2.1-offline-bundle:<tag>
+# Tag rule: <image name>-<original version>-offline-261001
+#
+# Columns: <type> <local image> <docker hub tag>
+#   original  pulled as-is from NGC / Docker Hub / Elastic
+#   commit    container committed after its runtime install (see compose.offline.yml)
+#   build     built locally by dev-profile.sh
+#   compiled  our services, Python compiled with Cython, no .py source
+#   model     model files packed under /model of an alpine image
+#   config    VSS deploy dir, vss-3.2.1 and Live Insight compose settings under
+#             /bundle of an alpine image (no .git, test data, NGC key or Insight/translation source)
+# pull.sh pulls each tag and re-tags it back to the local name.
+
+# --- NVIDIA VSS ---
+original  nvcr.io/nvidia/vss-core/vss-rt-vlm:3.2.1                             vss-rt-vlm-3.2.1-offline-261001
+original  nvcr.io/nvidia/vss-core/vss-video-summarization:3.2.1                vss-video-summarization-3.2.1-offline-261001
+original  nvcr.io/nvidia/vss-core/vss-agent:3.2.1                              vss-agent-3.2.1-offline-261001
+original  nvcr.io/nvidia/vss-core/vss-agent-ui:3.2.0                           vss-agent-ui-3.2.0-offline-261001
+original  nvcr.io/nvidia/vss-core/vss-alert-verification:3.2.0                 vss-alert-verification-3.2.0-offline-261001
+original  nvcr.io/nvidia/vss-core/vss-vios-sensor:3.2.1                        vss-vios-sensor-3.2.1-offline-261001
+original  nvcr.io/nvidia/vss-core/vss-vios-ingress:3.2.1                       vss-vios-ingress-3.2.1-offline-261001
+original  nvcr.io/nvidia/vss-core/sdr-mw-l:3.2.0                               sdr-mw-l-3.2.0-offline-261001
+commit    nvcr.io/nvidia/vss-core/vss-vios-streamprocessing:3.2.1-offline      vss-vios-streamprocessing-3.2.1-offline-261001
+commit    nvcr.io/nvidia/vss-core/vss-vios-nvstreamer:3.2.1-offline            vss-vios-nvstreamer-3.2.1-offline-261001
+
+# --- third party ---
+commit    docker.elastic.co/logstash/logstash:9.3.3-offline                    logstash-9.3.3-offline-261001
+original  docker.elastic.co/kibana/kibana:9.3.3                                kibana-9.3.3-offline-261001
+original  confluentinc/cp-kafka:8.2.0                                          cp-kafka-8.2.0-offline-261001
+original  arizephoenix/phoenix:14.15.0                                         phoenix-14.15.0-offline-261001
+original  postgres:17.9-alpine                                                 postgres-17.9-alpine-offline-261001
+original  redis:8.6.2-alpine                                                   redis-8.6.2-alpine-offline-261001
+original  haproxy:3.0-alpine                                                   haproxy-3.0-alpine-offline-261001
+original  alpine:3.23.4                                                        alpine-3.23.4-offline-261001
+commit    alpine:3.23.4-docker-cli-offline                                     alpine-3.23.4-docker-cli-offline-261001
+commit    alpine:3.23.4-gettext-yq-offline                                     alpine-3.23.4-gettext-yq-offline-261001
+
+# --- built locally ---
+build     elasticsearch:latest                                                 mdx-elasticsearch-offline-261001
+build     mdx-elasticsearch-init-container:latest                              mdx-elasticsearch-init-container-offline-261001
+build     mdx-kibana-init-container-lvs:latest                                 mdx-kibana-init-container-lvs-offline-261001
+build     mdx-broker-health-check:latest                                       mdx-broker-health-check-offline-261001
+compiled  vss-live-insight-app:latest                                          vss-live-insight-app-offline-261001
+compiled  vss-live-insight-translation:latest                                  vss-live-insight-translation-offline-261001
+
+# --- local LLM ---
+original  vllm/vllm-openai:nightly-0961bbae2894d574be790d219651824eb199318e   vllm-openai-nightly-0961bbae-offline-261001
+
+# --- models ---
+# rtvi-qwen3.5-9b: Qwen/Qwen3.5-9B as fetched by RT-VLM 3.2.1 -> volume mdx_rtvi-ngc-model-cache/Qwen3.5-9B
+# rtvi-hf-cache:   volume mdx_rtvi-hf-cache
+# translation:     OPUS eng-zho 2020-07-17, eng-jpn 2021-04-10, eng-kor 2022-07-28 (CTranslate2 int8)
+#                  -> volume vss-translation-service_translation-models
+# qwen3.8:         nvidia/Qwen3.8-27B-NVFP4 @ 482ca0f3832238542f8f5295dde86b5f22711d80 -> ~/.cache/huggingface-qwen38
+model     models/rtvi-qwen3.5-9b:rtvi3.2.1-offline-261001                      models-rtvi-qwen3.5-9b-rtvi3.2.1-offline-261001
+model     models/rtvi-hf-cache:rtvi3.2.1-offline-261001                        models-rtvi-hf-cache-rtvi3.2.1-offline-261001
+model     models/translation-zh-ja-ko:opus-int8-offline-261001                 models-translation-zh-ja-ko-opus-int8-offline-261001
+model     models/qwen3.8-27b-nvfp4:hf-482ca0f-offline-261001                   models-qwen3.8-27b-nvfp4-hf-482ca0f-offline-261001
+
+# --- configs ---
+config    vss-offline-config:offline-261001                                    vss-offline-config-offline-261001
