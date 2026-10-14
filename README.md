@@ -7,6 +7,7 @@ It is delivered as an **offline bundle** together with **VSS 3.2.1 — Jetson AG
 | Feature | VSS Live Insight & Alert | VSS 3.2.1 (LVS) |
 | --- | --- | --- |
 | **Main Focus** | Real-time monitoring | Deep analysis |
+| **User Interface** | Developed by Advantech | NVIDIA VSS native |
 | **Video Input** | Live streams & uploaded videos | Live streams & uploaded videos |
 | **Output** | Instant alerts & clip notes | Full reports & timed event summaries |
 
