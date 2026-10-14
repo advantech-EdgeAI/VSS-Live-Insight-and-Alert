@@ -10,6 +10,8 @@ It is delivered as an **offline bundle** together with **VSS 3.2.1 — Jetson AG
 | **Video Input** | Live streams & uploaded videos | Live streams & uploaded videos |
 | **Output** | Instant alerts & clip notes | Full reports & timed event summaries |
 
+![](./images/segments.png)
+
 ## Key Features
 
 * **Live Stream Analysis**: Analyzes live RTSP streams and shows a live preview in the browser through WebRTC.
@@ -19,6 +21,8 @@ It is delivered as an **offline bundle** together with **VSS 3.2.1 — Jetson AG
 * **Flexible Settings**: Configure the chunk duration, frame count, prompt, alerts, and translation from the UI.
 * **Caption Translation**: Translates English descriptions into Traditional Chinese, Japanese, and Korean.
 * **Offline Operation**: All container images and models are installed locally, and the whole stack starts automatically at boot without an internet connection.
+
+![](./images/alert.png)
 
 ## System Architecture
 
